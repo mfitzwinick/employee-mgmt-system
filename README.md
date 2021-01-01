@@ -16,6 +16,9 @@ By using this System, a business owner can:
 - Delete departments, roles an employees
 
 ## Languages Used
+ [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)]
+
+
 - node.js
 - javascript
 
