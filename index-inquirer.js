@@ -174,12 +174,12 @@ function updateEmployee() {
       .prompt([
         {
           name: "employeechoice",
-          type: "input",
+          type: "number",
           message: "What is the id of the employee you'd like to update?"
         },
         {
           name: "newRole",
-          type: "input",
+          type: "number",
           message: "What is the new role id of the employee you'd like to update?"
         }
       ])
@@ -200,12 +200,12 @@ function deleteEmployee() {
       .prompt([
         {
           name: "employeeremove",
-          type: "input",
+          type: "number",
           message: "What is the id of the employee you'd like to delete?"
         }
       ])
       .then(function (answer) {
-        connection.query("DELETE FROM employeetracker_db.employee WHERE id=?", [answer.employeeremove], function (err, results) {
+        connection.query("DELETE FROM employeetracker_db.employee WHERE id='?'", [answer.employeeremove], function (err, results) {
           if (err) throw err;
           console.log(res.affectedRows + " -- employee deleted!\n");
         });}
@@ -260,7 +260,7 @@ function updateDepartment() {
       .prompt([
         {
           name: "departmentchoice",
-          type: "input",
+          type: "number",
           message: "What is the id of the department you'd like to update?"
         },
         {
@@ -306,7 +306,6 @@ function viewDepartment() {
     connection.end();
   });
 }
-
 
 //Add,Update,Delete,View Role//
 function addRole() {
