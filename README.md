@@ -1,5 +1,7 @@
 # Employee Management System
 
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-coders-sweat.svg)](https://forthebadge.com)
+
 Easy to use command-line-interface tool for business owners!
 
 ## Purpose
@@ -13,7 +15,7 @@ By using this System, a business owner can:
 - Update employee roles
 - Update salary amounts
 - Update department names
-- Delete departments, roles an employees
+- Delete departments, roles and employees
 - Review the TOTAL employee salary budget (View Roles)
 
 ## Languages Used
@@ -29,7 +31,7 @@ This application uses the MySQL database and the npm package, Inquirer.
 
 
 ## File Structure
-- Assets (which includes schema and seeds)
+- Assets (which includes MySQL schema and seeds)
 - index-inquirer.js (all inquirer js is in this file)
 - package json (with dependencies)
 - readme
@@ -41,4 +43,4 @@ This application uses the MySQL database and the npm package, Inquirer.
 
 ## Future Development
 
-The application will be used to track managers and performance in later versions.
+The application will be used to track manager names and sales performance data.
