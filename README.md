@@ -14,9 +14,10 @@ By using this System, a business owner can:
 - Update salary amounts
 - Update department names
 - Delete departments, roles an employees
+- Review the TOTAL employee salary budget (View Roles)
 
 ## Languages Used
- [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)]
+ ![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)
 
 
 - node.js

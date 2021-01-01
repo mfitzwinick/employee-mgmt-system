@@ -57,6 +57,7 @@ function accessEmployee() {
         viewEmployee();
       }
       else if (answer.employee === "DELETE") {
+        console.warn("hit")
         deleteEmployee();
       }
       else if (answer.employee === "EXIT") {
@@ -83,7 +84,8 @@ function accessDepartment() {
       else if (answer.department === "VIEW") {
         viewDepartment();
       }
-      else if (answer.employee === "DELETE") {
+      else if (answer.department === "DELETE") {
+        console.warn("hit")
         deleteDepartment();
       }
       else if (answer.employee === "EXIT") {
@@ -120,6 +122,9 @@ function accessRole() {
 }
 //Add,Update,Delete,View Employee//
 function addEmployee() {
+  connection.query("SELECT * FROM employeetracker_db.employee", function (err, results) {
+    if (err) throw err;
+    console.table(results);
   inquirer
     .prompt([
       {
@@ -165,7 +170,10 @@ function addEmployee() {
         }
       );
     });
+})
 }
+
+
 function updateEmployee() {
   connection.query("SELECT * FROM employeetracker_db.employee", function (err, results) {
     if (err) throw err;
@@ -205,9 +213,9 @@ function deleteEmployee() {
         }
       ])
       .then(function (answer) {
-        connection.query("DELETE FROM employeetracker_db.employee WHERE id='?'", [answer.employeeremove], function (err, results) {
+        connection.query("DELETE FROM employeetracker_db.employee WHERE id='?'", [answer.employeeremove], function (err, res) {
           if (err) throw err;
-          console.log(res.affectedRows + " -- employee deleted!\n");
+          console.log(res.affectedRows + " -- Employee deleted!\n");
         });}
       )
     })
@@ -217,12 +225,15 @@ function viewEmployee() {
   connection.query("SELECT * FROM employeetracker_db.employee", function (err, res) {
     if (err) throw err;
     console.table(res);
-    connection.end();
+    start();
   });
 }
 
 //Add,Update,Delete,View Department//
 function addDepartment() {
+  connection.query("SELECT * FROM employeetracker_db.department", function (err, results) {
+    if (err) throw err;
+    console.table(results);
   inquirer
     .prompt([
       {
@@ -248,10 +259,10 @@ function addDepartment() {
           console.log("The department was added successfully!");
           start();
         }
-      );
-    });
-
-}
+      )
+    })
+})
+};
 function updateDepartment() {
   connection.query("SELECT * FROM employeetracker_db.department", function (err, results) {
     if (err) throw err;
@@ -274,6 +285,7 @@ function updateDepartment() {
           if (err) throw err;
           console.log("Updating department name...\n");
           console.table(results);
+          start();
         });}
       )
     })
@@ -291,7 +303,7 @@ function deleteDepartment() {
         }
       ])
       .then(function (answer) {
-        connection.query("DELETE FROM employeetracker_db.department WHERE id=?", [answer.departmentremove], function (err, results) {
+        connection.query("DELETE FROM employeetracker_db.department WHERE id=?", [answer.departmentremove], function (err, res) {
           if (err) throw err;
           console.log(res.affectedRows + " -- Department deleted!\n");
         });}
@@ -303,7 +315,7 @@ function viewDepartment() {
   connection.query("SELECT * FROM employeetracker_db.department", function (err, res) {
     if (err) throw err;
     console.table(res);
-    connection.end();
+    start();
   });
 }
 
@@ -371,6 +383,7 @@ function updateRole() {
           if (err) throw err;
           console.log("Updating salary...\n");
           console.table(results);
+          start();
         });}
       )
     })
@@ -388,7 +401,7 @@ function deleteRole() {
         }
       ])
       .then(function (answer) {
-        connection.query("DELETE FROM employeetracker_db.role WHERE id=?", [answer.roleremove], function (err, results) {
+        connection.query("DELETE FROM employeetracker_db.role WHERE id=?", [answer.roleremove], function (err, res) {
           if (err) throw err;
           console.log(res.affectedRows + " -- role deleted!\n");
         });}
@@ -400,7 +413,12 @@ function viewRole() {
   connection.query("SELECT * FROM employeetracker_db.role", function (err, res) {
     if (err) throw err;
     console.table(res);
-    connection.end();
+    let salary = 0
+    res.forEach(i => {
+      salary += i.salary
+    });
+    console.log("This is your TOTAL Employee Budget = $ " + salary + "\n")
+    start();
   })
 };
 
