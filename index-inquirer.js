@@ -1,6 +1,6 @@
+//set up and connection//
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -8,13 +8,11 @@ var connection = mysql.createConnection({
   password: "password",
   database: "employeetracker_db"
 });
-// connect to the mysql server and sql database
 connection.connect(function (err) {
   if (err) throw err;
-  // run the start function//
   start();
 });
-// function which prompts the user for what action they should take//
+// introductory promt//
 function start() {
   inquirer
     .prompt({
@@ -24,7 +22,7 @@ function start() {
       choices: ["DEPARTMENT", "ROLE", "EMPLOYEE", "EXIT"]
     })
     .then(function (answer) {
-      // based on their answer, either call dept, role or employee
+      // based on the answer,access dept, role, employee or exit//
       if (answer.drm === "DEPARTMENT") {
         accessDepartment();
       }
@@ -39,7 +37,7 @@ function start() {
       }
     });
 }
-
+//Employee Functions//
 function accessEmployee() {
   inquirer
     .prompt({
@@ -66,6 +64,7 @@ function accessEmployee() {
       }
     });
 }
+//Department Functions//
 function accessDepartment() {
   inquirer
     .prompt({
@@ -92,6 +91,7 @@ function accessDepartment() {
       }
     });
 }
+//Role functions//
 function accessRole() {
   inquirer
     .prompt({
@@ -118,7 +118,7 @@ function accessRole() {
       }
     });
 }
-
+//Add,Update,Delete,View Employee//
 function addEmployee() {
   inquirer
     .prompt([
@@ -165,14 +165,11 @@ function addEmployee() {
         }
       );
     });
-
 }
 function updateEmployee() {
   connection.query("SELECT * FROM employeetracker_db.employee", function (err, results) {
     if (err) throw err;
     console.table(results);
-
-
     inquirer
       .prompt([
         {
@@ -184,47 +181,227 @@ function updateEmployee() {
           name: "newRole",
           type: "input",
           message: "What is the new role id of the employee you'd like to update?"
-        },
+        }
       ])
       .then(function (answer) {
         connection.query("UPDATE employeetracker_db.employee SET role_id=? WHERE id=?", [answer.newRole, answer.employeechoice], function (err, results) {
           if (err) throw err;
           console.table(results);
-
-
           console.log("Updating employee file...\n");
-
-        }
-        );
-
-      }
+        });}
       )
-  })
-
+    })
 }
-
 function deleteEmployee() {
-  console.log("Deleting employee...\n");
-  connection.query(
-    "DELETE FROM employee WHERE ?",
-    {
-      lastname: answer.lastname
-    },
-    function (err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + " employee deleted!\n");
-    }
-  );
-}
-
+  connection.query("SELECT * FROM employeetracker_db.employee", function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    inquirer
+      .prompt([
+        {
+          name: "employeeremove",
+          type: "input",
+          message: "What is the id of the employee you'd like to delete?"
+        }
+      ])
+      .then(function (answer) {
+        connection.query("DELETE FROM employeetracker_db.employee WHERE id=?", [answer.employeeremove], function (err, results) {
+          if (err) throw err;
+          console.log(res.affectedRows + " -- employee deleted!\n");
+        });}
+      )
+    })
+  }
 function viewEmployee() {
   console.log("Viewing all employees...\n");
-  connection.query("SELECT * FROM employee", function (err, res) {
+  connection.query("SELECT * FROM employeetracker_db.employee", function (err, res) {
     if (err) throw err;
-    // Log all results of the SELECT statement
-    console.log(res);
+    console.table(res);
     connection.end();
   });
+}
+
+//Add,Update,Delete,View Department//
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        name: "deptId",
+        type: "number",
+        message: "What is the department id?"
+      },
+      {
+        name: "deptName",
+        type: "input",
+        message: "What is the name of the department?"
+      }
+    ])
+    .then(function (answer) {
+      connection.query(
+        "INSERT INTO employeetracker_db.department SET ?",
+        {
+          id: answer.deptId,
+          name: answer.deptName,
+        },
+        function (err) {
+          if (err) throw err;
+          console.log("The department was added successfully!");
+          start();
+        }
+      );
+    });
 
 }
-//-------------------------------------------------------------//
+function updateDepartment() {
+  connection.query("SELECT * FROM employeetracker_db.department", function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    inquirer
+      .prompt([
+        {
+          name: "departmentchoice",
+          type: "input",
+          message: "What is the id of the department you'd like to update?"
+        },
+        {
+          name: "newDeptName",
+          type: "input",
+          message: "What is the new name of the department you'd like to update?"
+        }
+      ])
+      .then(function (answer) {
+        connection.query("UPDATE employeetracker_db.department SET name=? WHERE id=?", [answer.newDeptName, answer.departmentchoice], function (err, results) {
+          if (err) throw err;
+          console.log("Updating department name...\n");
+          console.table(results);
+        });}
+      )
+    })
+}
+function deleteDepartment() {
+  connection.query("SELECT * FROM employeetracker_db.department", function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    inquirer
+      .prompt([
+        {
+          name: "departmentremove",
+          type: "number",
+          message: "What is the id of the department you'd like to remove?"
+        }
+      ])
+      .then(function (answer) {
+        connection.query("DELETE FROM employeetracker_db.department WHERE id=?", [answer.departmentremove], function (err, results) {
+          if (err) throw err;
+          console.log(res.affectedRows + " -- Department deleted!\n");
+        });}
+      )
+    })
+  }
+function viewDepartment() {
+  console.log("Viewing all departments...\n");
+  connection.query("SELECT * FROM employeetracker_db.department", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    connection.end();
+  });
+}
+
+
+//Add,Update,Delete,View Role//
+function addRole() {
+  inquirer
+    .prompt([
+      {
+        name: "roleId",
+        type: "number",
+        message: "What is the role id?"
+      },
+      {
+        name: "roleName",
+        type: "input",
+        message: "What is the name of the role?"
+      },
+      {
+        name: "salary",
+        type: "number",
+        message: "What is the salary amount (use numbers only)?"
+      },
+      {
+        name: "department_id",
+        type: "number",
+        message: "What is the department id number for this role?"
+      },
+    ])
+    .then(function (answer) {
+      connection.query(
+        "INSERT INTO employeetracker_db.role SET ?",
+        {
+          id: answer.roleId,
+          name: answer.roleName,
+          salary: answer.salary,
+          department_id: answer.department_id,
+        },
+        function (err) {
+          if (err) throw err;
+          console.log("The new role was added successfully!");
+          start();
+        }
+      );
+    });
+}
+function updateRole() {
+  connection.query("SELECT * FROM employeetracker_db.role", function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    inquirer
+      .prompt([
+        {
+          name: "rolechoice",
+          type: "number",
+          message: "What is the id of the role you would like to update?"
+        },
+        {
+          name: "newSalary",
+          type: "number",
+          message: "What is the updated salary for this role?"
+        }
+      ])
+      .then(function (answer) {
+        connection.query("UPDATE employeetracker_db.role SET salary=? WHERE id=?", [answer.newSalary, answer.rolechoice], function (err, results) {
+          if (err) throw err;
+          console.log("Updating salary...\n");
+          console.table(results);
+        });}
+      )
+    })
+}
+function deleteRole() {
+  connection.query("SELECT * FROM employeetracker_db.role", function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    inquirer
+      .prompt([
+        {
+          name: "roleremove",
+          type: "number",
+          message: "What is the id of the role you'd like to delete?"
+        }
+      ])
+      .then(function (answer) {
+        connection.query("DELETE FROM employeetracker_db.role WHERE id=?", [answer.roleremove], function (err, results) {
+          if (err) throw err;
+          console.log(res.affectedRows + " -- role deleted!\n");
+        });}
+      )
+    })
+  }
+function viewRole() {
+  console.log("Viewing all roles...\n");
+  connection.query("SELECT * FROM employeetracker_db.role", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    connection.end();
+  })
+};
+
